@@ -21,13 +21,17 @@
 # Source networking configuration.
 . /etc/sysconfig/network
 
-prog=/usr/local/bin/hyperkube
+#prog=/usr/local/bin/hyperkube
+apiserver_prog=/usr/local/bin/kube-apiserver
+scheduler_prog=/usr/local/bin/kube-scheduler
+controller_manager_prog=/usr/local/bin/kube-controller-manager
+
 lockfile=/var/lock/subsys/`basename $prog`
 hostname=`hostname`
 logfile=/var/log/kubernetes.log
 
 CLUSTER_NAME=my-happy-cluster
-ETCD_SERVERS="http://<%= @etcd_ba_account %>:<%= @etcd_ba_password %>@<%= @etcd_url %>:80"
+ETCD_SERVERS="<%= @etcd_server %>>"
 CLUSTER_IP_RANGE="<%= @cluster_cidr %>"
 MASTER="127.0.0.1:8080"
 
@@ -40,7 +44,7 @@ start() {
 
 	# Start daemon.
 	echo $"Starting apiserver: "
-	daemon $prog apiserver \
+	daemon $apiserver_prog \
 	--service-cluster-ip-range=${CLUSTER_IP_RANGE} \
 	--insecure-port=8080 \
 	--secure-port=6443 \
@@ -52,22 +56,15 @@ start() {
 
 
 	echo $"Starting controller-manager: "
-	daemon $prog controller-manager \
+	daemon $controller_manager_prog \
 	--master=${MASTER} \
 	> ${logfile} 2>&1 &
 
 
 	echo $"Starting scheduler: "
-	daemon $prog scheduler \
+	daemon $scheduler_prog \
 	--master=${MASTER} \
 	> ${logfile} 2>&1 &
-
-
-	echo $"Starting proxy: "
-	daemon $prog proxy \
-	--master=${MASTER} \
-	> ${logfile} 2>&1 &
-
 
 	RETVAL=$?
 	[ $RETVAL -eq 0 ] && touch $lockfile

@@ -9,19 +9,15 @@ bash 'install_flannel' do
   EOH
 end
 
-
-if my_etcd_elb = node[:opsworks][:stack]['elb-load-balancers'].select{|elb| elb[:layer_id] == node[:opsworks][:layers]['etcd'][:id] }.first
-
-    template "/etc/init.d/flanneld" do
-      mode "0755"
-      owner "root"
-      source "flanneld.erb"
-      variables ({
-		:elb_url => my_etcd_elb[:dns_name],
-		:etcd_password => node[:etcd_password]
-	  })
-      notifies :disable, 'service[flanneld]', :delayed
-    end
+template "/etc/init.d/flanneld" do
+	mode "0755"
+	owner "root"
+	source "flanneld-init-conf.erb"
+	variables ({
+	  :elb_url => node['etcd']['elb_url'],
+	  :etcd_password => node['etcd']['password']
+	})
+	notifies :disable, 'service[flanneld]', :delayed
 end
 
 

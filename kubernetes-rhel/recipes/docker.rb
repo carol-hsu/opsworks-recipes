@@ -3,7 +3,7 @@ include_recipe 'kubernetes-rhel::repo-setup'
 package 'docker' do
 	action :install
 	notifies :create, "template[/etc/sysconfig/docker]", :immediately
-	notifies :run, "bash[add-flanneld-in-docker]", :immediately
+	notifies :create, "template[/usr/lib/systemd/system/docker.service]", :immediately
 end
 
 template "/etc/sysconfig/docker" do
