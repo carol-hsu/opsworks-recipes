@@ -21,7 +21,9 @@
 # Source networking configuration.
 . /etc/sysconfig/network
 
-prog=/usr/local/bin/hyperkube
+#prog=/usr/local/bin/hyperkube
+kubelet_prog=/usr/local/bin/kubelet
+proxy_prog=/usr/local/bin/kube-proxy
 lockfile=/var/lock/subsys/`basename $prog`
 hostname=`hostname`
 logfile=/var/log/kubernetes.log
@@ -29,7 +31,7 @@ logfile=/var/log/kubernetes.log
 start() {
 	# Start daemon.
 	echo $"Starting kubelet: "
-	daemon $prog kubelet \
+	daemon $kubelet_prog \
 		--api_servers=http://<%= @master_url %>:8080 \
 		--v=2 \
 		--address=0.0.0.0 \
@@ -38,7 +40,7 @@ start() {
 		> ${logfile} 2>&1 &
 
 	echo $"Starting proxy: "
-	daemon $prog proxy \
+	daemon $proxy_prog \
 		--master=http://<%= @master_url %>:8080 \
 		--v=2 \
 		> ${logfile} 2>&1 &
