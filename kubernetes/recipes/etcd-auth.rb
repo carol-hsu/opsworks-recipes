@@ -1,3 +1,5 @@
+include_recipe 'kubernetes::etcd'
+
 service "etcd" do
 	action :start
 end
