@@ -59,7 +59,7 @@ start() {
 
 
 	echo $"Starting controller-manager: "
-	daemon $controller_manager_prog \
+	daemon $controller_prog \
 	--master=${MASTER} \
 	> ${logfile}-controller-manager.log 2>&1 &
 
