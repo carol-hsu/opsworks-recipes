@@ -55,10 +55,18 @@ start() {
 
 stop() {
 	[ "$EUID" != "0" ] && exit 4
-        echo -n $"Shutting down $prog: "
-	killproc $prog
+	echo -n $"Shutting down $kubelet_prog: "
+	killproc $kubelet_prog
+
 	RETVAL=$?
-        echo
+	echo
+	
+	echo -n $"Shutting down $proxy_prog: "
+    killproc $proxy_prog
+    
+	RETVAL=$(($RETVAL&$?))
+    echo
+
 	[ $RETVAL -eq 0 ] && rm -f $kubelet_lockfile $proxy_lockfile
 	return $RETVAL
 }

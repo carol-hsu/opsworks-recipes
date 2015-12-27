@@ -56,13 +56,11 @@ start() {
 	--etcd_servers=${ETCD_SERVERS} \
 	--cluster_name=${CLUSTER_NAME} \
 	> ${logfile}-apiserver.log 2>&1 &
-
-
+	
 	echo $"Starting controller-manager: "
 	daemon $controller_prog \
 	--master=${MASTER} \
 	> ${logfile}-controller-manager.log 2>&1 &
-
 
 	echo $"Starting scheduler: "
 	daemon $scheduler_prog \
@@ -76,10 +74,24 @@ start() {
 
 stop() {
 	[ "$EUID" != "0" ] && exit 4
-        echo -n $"Shutting down $prog: "
-	killproc $prog
+	echo -n $"Shutting down $controller_prog: "
+	killproc $controller_prog
+
 	RETVAL=$?
-        echo
+	echo
+
+	echo -n $"Shutting down $scheduler_prog: "
+	killproc $scheduler_prog
+
+	RETVAL=$(($RETVAL&$?))
+	echo
+
+	echo -n $"Shutting down $apiserver_prog: "
+	killproc $apiserver_prog
+
+	RETVAL=$(($RETVAL&$?))
+	echo
+
 	[ $RETVAL -eq 0 ] && rm -f $apiserver_lockfile $scheduler_lockfile $controller_lockfile
 	return $RETVAL
 }
