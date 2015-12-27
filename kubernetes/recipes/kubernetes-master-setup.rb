@@ -4,8 +4,10 @@ bash "master-file-copy" do
     user 'root'
     cwd '/tmp//kubernetes/server/kubernetes/server/bin'
     code <<-EOH
-    mkdir /etc/kubernetes
-    cp kubectl kube-apiserver kube-scheduler kube-controller-manager /usr/local/bin/
+    if ! [[ $(ls /usr/local/bin/kube*) ]]; then
+      mkdir /etc/kubernetes
+      cp kubectl kube-apiserver kube-scheduler kube-controller-manager /usr/local/bin/
+    fi
     EOH
 end
 

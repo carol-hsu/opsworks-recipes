@@ -4,9 +4,11 @@ bash "minion-file-copy" do
     user 'root'
     cwd '/tmp//kubernetes/server/kubernetes/server/bin'
     code <<-EOH
-    mkdir /var/lib/kubelet
-    mkdir /etc/kubernetes
-    cp kubelet kube-proxy /usr/local/bin/
+    if ! [[ $(ls /usr/local/bin/kube*) ]]; then
+      mkdir /var/lib/kubelet
+      mkdir /etc/kubernetes
+      cp kubelet kube-proxy /usr/local/bin/
+    fi
     EOH
 end
 
