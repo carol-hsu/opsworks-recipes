@@ -24,11 +24,14 @@
 #prog=/usr/local/bin/hyperkube
 apiserver_prog=/usr/local/bin/kube-apiserver
 scheduler_prog=/usr/local/bin/kube-scheduler
-controller_manager_prog=/usr/local/bin/kube-controller-manager
+controller_prog=/usr/local/bin/kube-controller-manager
 
-lockfile=/var/lock/subsys/`basename $prog`
+apiserver_lockfile=/var/lock/subsys/`basename $apiserver_prog`
+scheduler_lockfile=/var/lock/subsys/`basename $scheduler_prog`
+controller_lockfile=/var/lock/subsys/`basename $controller_prog`
+
 hostname=`hostname`
-logfile=/var/log/kubernetes.log
+logfile=/var/log/k8s
 
 CLUSTER_NAME=my-happy-cluster
 ETCD_SERVERS="<%= @etcd_server %>>"
@@ -52,22 +55,22 @@ start() {
 	--address=0.0.0.0 \
 	--etcd_servers=${ETCD_SERVERS} \
 	--cluster_name=${CLUSTER_NAME} \
-	> ${logfile} 2>&1 &
+	> ${logfile}-apiserver.log 2>&1 &
 
 
 	echo $"Starting controller-manager: "
 	daemon $controller_manager_prog \
 	--master=${MASTER} \
-	> ${logfile} 2>&1 &
+	> ${logfile}-controller-manager.log 2>&1 &
 
 
 	echo $"Starting scheduler: "
 	daemon $scheduler_prog \
 	--master=${MASTER} \
-	> ${logfile} 2>&1 &
+	> ${logfile}-scheduler.log 2>&1 &
 
 	RETVAL=$?
-	[ $RETVAL -eq 0 ] && touch $lockfile
+	[ $RETVAL -eq 0 ] && touch $apiserver_lockfile && touch $scheduler_lockfile && touch $controller_lockfile
 	return $RETVAL
 }
 
@@ -77,7 +80,7 @@ stop() {
 	killproc $prog
 	RETVAL=$?
         echo
-	[ $RETVAL -eq 0 ] && rm -f $lockfile
+	[ $RETVAL -eq 0 ] && rm -f $apiserver_lockfile $scheduler_lockfile $controller_lockfile
 	return $RETVAL
 }
 

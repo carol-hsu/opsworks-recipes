@@ -24,9 +24,12 @@
 #prog=/usr/local/bin/hyperkube
 kubelet_prog=/usr/local/bin/kubelet
 proxy_prog=/usr/local/bin/kube-proxy
-lockfile=/var/lock/subsys/`basename $prog`
+
+kubelet_lockfile=/var/lock/subsys/`basename $kubelet_prog`
+proxy_lockfile=/var/lock/subsys/`basename $proxy_prog`
+
 hostname=`hostname`
-logfile=/var/log/kubernetes.log
+logfile=/var/log/k8s
 
 start() {
 	# Start daemon.
@@ -37,16 +40,16 @@ start() {
 		--address=0.0.0.0 \
 		--enable_server \
 		--hostname_override=${hostname} \
-		> ${logfile} 2>&1 &
+		> ${logfile}-kubelet.log 2>&1 &
 
 	echo $"Starting proxy: "
 	daemon $proxy_prog \
 		--master=http://<%= @master_url %>:8080 \
 		--v=2 \
-		> ${logfile} 2>&1 &
+		> ${logfile}-proxy.log 2>&1 &
 
 	RETVAL=$?
-	[ $RETVAL -eq 0 ] && touch $lockfile
+	[ $RETVAL -eq 0 ] && touch $kubelet_lockfile && touch $proxy_lockfile
 	return $RETVAL
 }
 
@@ -56,7 +59,7 @@ stop() {
 	killproc $prog
 	RETVAL=$?
         echo
-	[ $RETVAL -eq 0 ] && rm -f $lockfile
+	[ $RETVAL -eq 0 ] && rm -f $kubelet_lockfile $proxy_lockfile
 	return $RETVAL
 }
 
