@@ -25,10 +25,12 @@
 apiserver_prog=/usr/local/bin/kube-apiserver
 scheduler_prog=/usr/local/bin/kube-scheduler
 controller_prog=/usr/local/bin/kube-controller-manager
+proxy_prog=/usr/local/bin/kube-proxy
 
 apiserver_lockfile=/var/lock/subsys/`basename $apiserver_prog`
 scheduler_lockfile=/var/lock/subsys/`basename $scheduler_prog`
 controller_lockfile=/var/lock/subsys/`basename $controller_prog`
+proxy_lockfile=/var/lock/subsys/`basename $proxy_prog`
 
 hostname=`hostname`
 logfile=/var/log/k8s
@@ -67,17 +69,30 @@ start() {
 	--master=${MASTER} \
 	> ${logfile}-scheduler.log 2>&1 &
 
+	echo $"Starting proxy: "
+	daemon $proxy_prog \
+	--master=${MASTER} \
+	--v=2 \
+	> ${logfile}-proxy.log 2>&1 &
+
 	RETVAL=$?
-	[ $RETVAL -eq 0 ] && touch $apiserver_lockfile && touch $scheduler_lockfile && touch $controller_lockfile
+	[ $RETVAL -eq 0 ] && touch $apiserver_lockfile && touch $scheduler_lockfile \
+					  && touch $controller_lockfile && touch $proxy_lockfile
 	return $RETVAL
 }
 
 stop() {
 	[ "$EUID" != "0" ] && exit 4
+	echo -n $"Shutting down $proxy_prog: "
+	killproc $proxy_prog
+
+	RETVAL=$?
+	echo
+	
 	echo -n $"Shutting down $controller_prog: "
 	killproc $controller_prog
 
-	RETVAL=$?
+	RETVAL=$(($RETVAL&$?))
 	echo
 
 	echo -n $"Shutting down $scheduler_prog: "
@@ -92,7 +107,7 @@ stop() {
 	RETVAL=$(($RETVAL&$?))
 	echo
 
-	[ $RETVAL -eq 0 ] && rm -f $apiserver_lockfile $scheduler_lockfile $controller_lockfile
+	[ $RETVAL -eq 0 ] && rm -f $apiserver_lockfile $scheduler_lockfile $controller_lockfile $proxy_lockfile
 	return $RETVAL
 }
 

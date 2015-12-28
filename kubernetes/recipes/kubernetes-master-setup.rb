@@ -6,7 +6,7 @@ bash "master-file-copy" do
     code <<-EOH
     if ! [[ $(ls /usr/local/bin/kube*) ]]; then
       mkdir /etc/kubernetes
-      cp kubectl kube-apiserver kube-scheduler kube-controller-manager /usr/local/bin/
+      cp kubectl kube-apiserver kube-scheduler kube-controller-manager kube-proxy /usr/local/bin/
     fi
     EOH
 end
