@@ -12,7 +12,7 @@ bash "minion-file-copy" do
 end
 
 # add config files
-template "/etc/kubernetes/conf" do
+template "/etc/kubernetes/config" do
 	mode "0644"
 	owner "root"
 	source "minion-conf.erb"
