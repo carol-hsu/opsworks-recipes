@@ -2,11 +2,12 @@ include_recipe 'kubernetes::kubernetes'
 
 bash "minion-file-copy" do
     user 'root'
-    cwd '/tmp//kubernetes/server/kubernetes/server/bin'
+    cwd '/tmp'
     code <<-EOH
     if ! [[ $(ls /usr/local/bin/kube*) ]]; then
       mkdir /var/lib/kubelet
       mkdir /etc/kubernetes
+	  cd ./kubernetes/server/kubernetes/server/bin
       cp kubelet kube-proxy /usr/local/bin/
     fi
     EOH
