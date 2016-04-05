@@ -1,5 +1,3 @@
-include_recipe 'kubernetes-rhel::repo-setup'
-
 template "/etc/yum.repos.d/docker.repo" do
 	mode "0644"
     owner "root"
