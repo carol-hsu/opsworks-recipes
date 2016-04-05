@@ -2,7 +2,7 @@ include_recipe 'kubernetes::kubernetes'
 
 bash "master-file-copy" do
     user 'root'
-    cwd '/opt'
+    cwd '/tmp'
     code <<-EOH
     if ! [[ $(ls /usr/local/bin/kube*) ]]; then
       mkdir /etc/kubernetes
