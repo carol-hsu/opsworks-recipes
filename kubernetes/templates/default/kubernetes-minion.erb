@@ -21,40 +21,53 @@
 # Source networking configuration.
 . /etc/sysconfig/network
 
-prog=/usr/local/bin/hyperkube
-lockfile=/var/lock/subsys/`basename $prog`
+#prog=/usr/local/bin/hyperkube
+kubelet_prog=/usr/local/bin/kubelet
+proxy_prog=/usr/local/bin/kube-proxy
+
+kubelet_lockfile=/var/lock/subsys/`basename $kubelet_prog`
+proxy_lockfile=/var/lock/subsys/`basename $proxy_prog`
+
 hostname=`hostname`
-logfile=/var/log/kubernetes.log
+logfile=/var/log/k8s
 
 start() {
 	# Start daemon.
 	echo $"Starting kubelet: "
-	daemon $prog kubelet \
+	daemon $kubelet_prog \
 		--api_servers=http://<%= @master_url %>:8080 \
 		--v=2 \
 		--address=0.0.0.0 \
 		--enable_server \
 		--hostname_override=${hostname} \
-		> ${logfile} 2>&1 &
+		> ${logfile}-kubelet.log 2>&1 &
 
 	echo $"Starting proxy: "
-	daemon $prog proxy \
+	daemon $proxy_prog \
 		--master=http://<%= @master_url %>:8080 \
 		--v=2 \
-		> ${logfile} 2>&1 &
+		> ${logfile}-proxy.log 2>&1 &
 
 	RETVAL=$?
-	[ $RETVAL -eq 0 ] && touch $lockfile
+	[ $RETVAL -eq 0 ] && touch $kubelet_lockfile && touch $proxy_lockfile
 	return $RETVAL
 }
 
 stop() {
 	[ "$EUID" != "0" ] && exit 4
-        echo -n $"Shutting down $prog: "
-	killproc $prog
+	echo -n $"Shutting down $kubelet_prog: "
+	killproc $kubelet_prog
+
 	RETVAL=$?
-        echo
-	[ $RETVAL -eq 0 ] && rm -f $lockfile
+	echo
+	
+	echo -n $"Shutting down $proxy_prog: "
+    killproc $proxy_prog
+    
+	RETVAL=$(($RETVAL&$?))
+    echo
+
+	[ $RETVAL -eq 0 ] && rm -f $kubelet_lockfile $proxy_lockfile
 	return $RETVAL
 }
 

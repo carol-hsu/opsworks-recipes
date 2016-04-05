@@ -8,6 +8,6 @@ template '/etc/etcd/etcd.conf' do
 	source "etcd.conf.erb"
 	mode "0755"
 	owner "root"
-	subscribes :create, "package[etcd]", :delayed
+	subscribes :create, "package[etcd]", :immediately
 end
 

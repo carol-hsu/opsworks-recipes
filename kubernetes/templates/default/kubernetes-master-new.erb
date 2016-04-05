@@ -54,9 +54,8 @@ start() {
 	--insecure-port=8080 \
 	--secure-port=6443 \
 	--basic-auth-file="<%= @ba_path %>" \
-	--address=0.0.0.0 \
+	--insecure-bind-address=0.0.0.0 \
 	--etcd_servers=${ETCD_SERVERS} \
-	--cluster_name=${CLUSTER_NAME} \
 	> ${logfile}-apiserver.log 2>&1 &
 	
 	echo $"Starting controller-manager: "

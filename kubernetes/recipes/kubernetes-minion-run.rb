@@ -5,7 +5,6 @@ end
 
 bash 'wait_flanneld' do
 	user 'root'
-	cwd '/tmp'
 	code <<-EOH
 	tries=0
         while [ ! -f /run/flannel/subnet.env -a $tries -lt 10 ]; do

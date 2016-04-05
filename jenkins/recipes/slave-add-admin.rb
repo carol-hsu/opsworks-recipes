@@ -25,5 +25,13 @@ directory '/media/ephemeral0/jenkins' do
     recursive true
 end
 
+#create dir
+directory '/media/ephemeral1/jenkins' do
+    owner 'jenkins'
+    group 'jenkins'
+    mode '0755'
+    action :create
+    recursive true
+end
 
 Chef::Log.info("***************** Jenkins slave configure finished **************")

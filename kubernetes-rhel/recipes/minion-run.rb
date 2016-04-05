@@ -1,6 +1,6 @@
 include_recipe 'kubernetes-rhel::minion-setup'
-include_recipe 'kubernetes-rhel::flanneld-init'
-include_recipe 'kubernetes-rhel::docker'
+include_recipe 'kubernetes-rhel::flanneld'
+include_recipe 'kubernetes-rhel::docker-engine'
 
 bash 'start_flanneld_and_docker' do
 	user 'root'

@@ -1,12 +1,26 @@
-if my_master_elb = node[:opsworks][:stack]['elb-load-balancers'].select{|elb| elb[:layer_id] == node[:opsworks][:layers]['kub-master'][:id] }.first
+include_recipe 'kubernetes::kubernetes'
 
-    template "/etc/init.d/kubernetes-minion" do
-      mode "0755"
-      owner "root"
-      source "kubernetes-minion.erb"
-      variables :master_url => my_master_elb[:dns_name]
-      notifies :disable, 'service[kubernetes-minion]', :delayed
-    end
+bash "minion-file-copy" do
+    user 'root'
+    cwd '/opt'
+    code <<-EOH
+    if ! [[ $(ls /usr/local/bin/kube*) ]]; then
+      mkdir /var/lib/kubelet
+      mkdir /etc/kubernetes
+	  cd ./kubernetes/server/kubernetes/server/bin
+      cp kubelet kube-proxy /usr/local/bin/
+    fi
+    EOH
+end
+
+template "/etc/init.d/kubernetes-minion" do
+	mode "0755"
+	owner "root"
+	source "kubernetes-minion.erb"
+	variables :master_url => node['kubernetes']['master_url']
+	subscribes :create, "bash[minion-file-copy]", :immediately
+	notifies :disable, 'service[kubernetes-minion]', :delayed
+    action :nothing
 end
 
 service "kubernetes-minion" do

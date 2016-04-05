@@ -34,6 +34,7 @@ start() {
 	RETVAL=$?
 	echo
 	# add docker network config
+	sleep 5
 	FLANNEL_SUBNET=$(fgrep "FLANNEL_SUBNET" /run/flannel/subnet.env | awk -F "=" '{print $2}')
 	FLANNEL_MTU=$(fgrep "FLANNEL_MTU" /run/flannel/subnet.env | awk -F "=" '{print $2}')
 	FLANNEL_IPMASQ=$(fgrep "FLANNEL_IPMASQ" /run/flannel/subnet.env | awk -F "=" '{print $2}')

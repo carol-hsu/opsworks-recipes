@@ -27,14 +27,16 @@ template "/etc/kubernetes/apiserver" do
 		:cluster_cidr => node['kubernetes']['cluster_cidr'],
 		:cluster_name => "happy-k8s-cluster"
 	})
-	subscribes :create, "bash[master-file-copy]", :delayed
+	subscribes :create, "bash[master-file-copy]", :immediately
+	action :nothing
 end
 
 template "/etc/kubernetes/config" do
 	mode "0644"
 	owner "root"
 	source "master-conf.erb"
-	subscribes :create, "bash[master-file-copy]", :delayed
+	subscribes :create, "bash[master-file-copy]", :immediately
+	action :nothing
 end
 
 # add service init files
@@ -42,26 +44,29 @@ template "/usr/lib/systemd/system/kube-apiserver.service" do
 	mode "0644"
 	owner "root"
 	source "kube-apiserver.service.erb"
-	subscribes :create, "bash[master-file-copy]", :delayed
+	subscribes :create, "bash[master-file-copy]", :immediately
+	action :nothing
 end
 template "/usr/lib/systemd/system/kube-controller-manager.service" do
 	mode "0644"
 	owner "root"
 	source "kube-controller-manager.service.erb"
-	subscribes :create, "bash[master-file-copy]", :delayed
+	subscribes :create, "bash[master-file-copy]", :immediately
+	action :nothing
 end
 template "/usr/lib/systemd/system/kube-scheduler.service" do
 	mode "0644"
 	owner "root"
 	source "kube-scheduler.service.erb"
-	subscribes :create, "bash[master-file-copy]", :delayed
+	subscribes :create, "bash[master-file-copy]", :immediately
+	action :nothing
 end
 
 user 'kube' do
 	home '/home/kube'
 	shell '/bin/bash'
 	action :create
-	notifies :create, "file[/opt/ba_file]", :delayed
+	notifies :create, "file[/opt/ba_file]", :immediately
 end
 
 file "/opt/ba_file" do
