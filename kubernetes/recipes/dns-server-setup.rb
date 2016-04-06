@@ -1,13 +1,14 @@
 # run the pod and servie of DNS server
 include_recipe 'kubernetes::kubernetes-master-run'
-
-directory "/opt/dns-template" do
-	 owner 'root'
-     group 'root'
-     mode '0755'
-     action :create
-     notifies :create, 'template[/opt/dns-template/skydns-rc.yaml]', :immediately
-     notifies :create, 'template[/opt/dns-template/skydns-svc.yaml]', :immediately
+unless Dir.exist?('/opt/dns-template')
+	directory "/opt/dns-template" do
+		 owner 'root'
+    	 group 'root'
+    	 mode '0755'
+    	 action :create
+    	 notifies :create, 'template[/opt/dns-template/skydns-rc.yaml]', :immediately
+    	 notifies :create, 'template[/opt/dns-template/skydns-svc.yaml]', :immediately
+	end
 end
 
 template "/opt/dns-template/skydns-rc.yaml" do
