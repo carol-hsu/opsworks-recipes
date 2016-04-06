@@ -52,7 +52,7 @@ spec:
           env:
             # This variable is required to setup templates in Grafana.
             - name: INFLUXDB_SERVICE_URL
-              value: http://monitoring-influxdb.<%= @dns_domain %>:8086
+              value: http://monitoring-influxdb.kube-system:8086
               # The following env variables are required to make Grafana accessible via
               # the kubernetes api-server proxy. On production clusters, we recommend
               # removing these env variables, setup auth for grafana, and expose the grafana

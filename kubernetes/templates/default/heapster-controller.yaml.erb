@@ -41,8 +41,8 @@ spec:
               memory: 200Mi 
           command:
             - /heapster
-            - --source=kubernetes.summary_api:''
-            - --sink=influxdb:http://monitoring-influxdb.<%= @dns_domain %>:8086
+            - --source=kubernetes:<%= @master_url %>:8080?inClusterConfig=false
+            - --sink=influxdb:http://monitoring-influxdb.kube-system:8086
             - --metric_resolution=60s
         - image: gcr.io/google_containers/heapster:v1.1.0-beta1
           name: eventer
@@ -56,8 +56,8 @@ spec:
               memory: 200 
           command:
             - /eventer
-            - --source=kubernetes:''
-            - --sink=influxdb:http://monitoring-influxdb.<%= @dns_domain %>:8086
+            - --source=kubernetes:<%= @master_url %>:8080?inClusterConfig=false
+            - --sink=influxdb:http://monitoring-influxdb.kube-sustem:8086
         - image: gcr.io/google_containers/addon-resizer:1.0
           name: heapster-nanny
           resources:

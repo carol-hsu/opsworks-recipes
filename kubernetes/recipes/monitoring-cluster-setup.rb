@@ -18,8 +18,7 @@ template "/opt/monitoring-template/grafana-service.yaml" do
     mode "0644"
     owner "root"
     source "grafana-service.yaml.erb"
-    variables :dns_domain => node['kubernetes']['dns_domain']
-    notifies :run, "execute[wait_apiserver_running]", :delayed
+    notifies :run, "execute[start-services-and-db]", :delayed
     action :nothing
 end
 
@@ -27,52 +26,52 @@ template "/opt/monitoring-template/heapster-service.yaml" do
     mode "0644"
     owner "root"
     source "heapster-service.yaml.erb"
-    variables :dns_domain => node['kubernetes']['dns_domain']
-    notifies :run, "execute[wait_apiserver_running]", :delayed
+    notifies :run, "execute[start-services-and-db]", :delayed
     action :nothing
 end
 template "/opt/monitoring-template/influxdb-service.yaml" do
     mode "0644"
     owner "root"
     source "influxdb-service.yaml.erb"
-    variables :dns_domain => node['kubernetes']['dns_domain']
-    notifies :run, "execute[wait_apiserver_running]", :delayed
+    notifies :run, "execute[start-services-and-db]", :delayed
     action :nothing
 end
 template "/opt/monitoring-template/heapster-controller.yaml" do
     mode "0644"
     owner "root"
     source "heapster-controller.yaml.erb"
-    variables :dns_domain => node['kubernetes']['dns_domain']
-    notifies :run, "execute[wait_apiserver_running]", :delayed
+    variables :master_url => node['kubernetes']['master_url']
     action :nothing
 end
 template "/opt/monitoring-template/influxdb-grafana-controller.yaml" do
     mode "0644"
     owner "root"
     source "influxdb-grafana-controller.yaml.erb"
-    variables :dns_ip => node['kubernetes']['dns_ip']
-    notifies :run, "execute[wait_apiserver_running]", :delayed
+    notifies :run, "execute[start-services-and-db]", :delayed
     action :nothing
 end
 
-execute 'wait_apiserver_running' do
-	command "sleep 10"
-    action :nothing
-    notifies :run, 'execute[run-rc]', :delayed
-    notifies :run, 'execute[run-svc]', :delayed
-end
-
-
-execute "run-rc" do
+execute 'start-services-and-db' do
     cwd "/opt/monitoring-template/"
-    command "kubectl create -f skydns-rc.yaml"
+	command <<-EOF
+	kubectl create -f grafana-service.yaml
+	kubectl create -f heapster-service.yaml
+	kubectl create -f influxdb-service.yaml
+	kubectl create -f influxdb-grafana-controller.yaml
+	EOF
     action :nothing
+    notifies :run, 'execute[wait-for-db-creation]', :delayed
 end
 
-execute "run-svc" do
+execute "wait-for-db-creation" do
+    command "sleep 30"
+    action :nothing
+    notifies :run, 'execute[start-heapster]', :delayed
+end
+
+execute "start-heapster" do
     cwd "/opt/monitoring-template/"
-    command "kubectl create -f skydns-svc.yaml"
+    command "kubectl create -f heapster-controller.yaml"
     action :nothing
 end
 
