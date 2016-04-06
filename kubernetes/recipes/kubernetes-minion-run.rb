@@ -1,3 +1,5 @@
+include_recipe 'kubernetes::kubernetes-minion-setup'
+
 service "flanneld" do
 	action :start
 	notifies :run, 'bash[wait_flanneld]', :immediately
