@@ -15,7 +15,7 @@ template "/opt/dns-template/skydns-rc.yaml" do
     owner "root"
     source "skydns-rc.yaml.erb"
     variables :dns_domain => node['kubernetes']['dns_domain']
-    notifies :run, "execute[run-rc]", :delayed
+    notifies :run, "execute[wait_apiserver_running]", :delayed
     action :nothing
 end
 
@@ -24,9 +24,17 @@ template "/opt/dns-template/skydns-svc.yaml" do
     owner "root"
     source "skydns-svc.yaml.erb"
     variables :dns_ip => node['kubernetes']['dns_ip']
-    notifies :run, "execute[run-svc]", :delayed
+    notifies :run, "execute[wait_apiserver_running]", :delayed
     action :nothing
 end
+
+execute 'wait_apiserver_running' do
+	command "sleep 10"
+    action :nothing
+    notifies :run, 'execute[run-rc]', :delayed
+    notifies :run, 'execute[run-svc]', :delayed
+end
+
 
 execute "run-rc" do
     cwd "/opt/dns-template/"
