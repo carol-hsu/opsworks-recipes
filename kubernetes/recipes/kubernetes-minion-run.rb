@@ -1,6 +1,6 @@
 service "flanneld" do
 	action :start
-	notifies :run, 'bash[wait_flanneld]', :delayed
+	notifies :run, 'bash[wait_flanneld]', :immediately
 end
 
 bash 'wait_flanneld' do
@@ -14,12 +14,12 @@ bash 'wait_flanneld' do
 	EOH
 
 	action :nothing
-	notifies :start, 'service[docker]', :delayed
+	notifies :start, 'service[docker]', :immediately
 end
 
 service "docker" do
 	action :nothing
-	notifies :start, 'service[kubernetes-minion]', :delayed
+	notifies :start, 'service[kubernetes-minion]', :immediately
 end
 
 

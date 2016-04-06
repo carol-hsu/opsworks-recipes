@@ -19,7 +19,7 @@ template "/etc/init.d/kubernetes-minion" do
 	source "kubernetes-minion.erb"
 	variables :master_url => node['kubernetes']['master_url']
 	subscribes :create, "bash[minion-file-copy]", :immediately
-	notifies :disable, 'service[kubernetes-minion]', :delayed
+	notifies :disable, 'service[kubernetes-minion]', :immediately
     action :nothing
 end
 

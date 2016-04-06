@@ -1,6 +1,6 @@
 service "flanneld" do
 	action :start
-	notifies :run, 'bash[wait_flanneld]', :delayed
+	notifies :run, 'bash[wait_flanneld]', :immediately
 end
 
 bash 'wait_flanneld' do
@@ -14,7 +14,7 @@ bash 'wait_flanneld' do
 	EOH
 
 	action :nothing
-	notifies :start, 'service[kubernetes-master]', :delayed
+	notifies :start, 'service[kubernetes-master]', :immediately
 end
 
 
