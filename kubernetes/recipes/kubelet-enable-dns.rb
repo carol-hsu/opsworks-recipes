@@ -12,4 +12,5 @@ end
 
 service "kubernetes-minion" do
 	action :nothing
+	supports { :restart => true }
 end

@@ -1,12 +1,16 @@
 # run the pod and servie of monitoring system
 include_recipe 'kubernetes::kubernetes-master-run'
-unless Dir.exist?('/opt/monitoring-template')
+unless Dir.exist?('/opt/monitoring-template') #should access etcd for sure
 	directory "/opt/monitoring-template" do
 		 owner 'root'
     	 group 'root'
     	 mode '0755'
     	 action :create
-    	 notifies :create, 'template[/opt/monitoring-template/.yaml]', :immediately
+    	 notifies :create, 'template[/opt/monitoring-template/grafana-service.yaml]', :immediately
+    	 notifies :create, 'template[/opt/monitoring-template/heapster-service.yaml]', :immediately
+    	 notifies :create, 'template[/opt/monitoring-template/influxdb-service.yaml]', :immediately
+    	 notifies :create, 'template[/opt/monitoring-template/heapster-controller.yaml]', :immediately
+    	 notifies :create, 'template[/opt/monitoring-template/influxdb-grafana-controller.yaml]', :immediately
 	end
 end
 
