@@ -81,6 +81,7 @@ spec:
         args:
         # command = "/kube2sky"
         - --domain=<%= @dns_domain %>
+        - --kube-master-url=http://<%= @master_url %>:8080
       - name: skydns
         image: gcr.io/google_containers/skydns:2015-10-13-8c72f8c
         resources:
