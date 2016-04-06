@@ -14,19 +14,43 @@ unless Dir.exist?('/opt/monitoring-template') #should access etcd for sure
 	end
 end
 
-template "/opt/dns-template/skydns-rc.yaml" do
+template "/opt/monitoring-template/grafana-service.yaml" do
     mode "0644"
     owner "root"
-    source "skydns-rc.yaml.erb"
+    source "grafana-service.yaml.erb"
     variables :dns_domain => node['kubernetes']['dns_domain']
     notifies :run, "execute[wait_apiserver_running]", :delayed
     action :nothing
 end
 
-template "/opt/dns-template/skydns-svc.yaml" do
+template "/opt/monitoring-template/heapster-service.yaml" do
     mode "0644"
     owner "root"
-    source "skydns-svc.yaml.erb"
+    source "heapster-service.yaml.erb"
+    variables :dns_domain => node['kubernetes']['dns_domain']
+    notifies :run, "execute[wait_apiserver_running]", :delayed
+    action :nothing
+end
+template "/opt/monitoring-template/influxdb-service.yaml" do
+    mode "0644"
+    owner "root"
+    source "influxdb-service.yaml.erb"
+    variables :dns_domain => node['kubernetes']['dns_domain']
+    notifies :run, "execute[wait_apiserver_running]", :delayed
+    action :nothing
+end
+template "/opt/monitoring-template/heapster-controller.yaml" do
+    mode "0644"
+    owner "root"
+    source "heapster-controller.yaml.erb"
+    variables :dns_domain => node['kubernetes']['dns_domain']
+    notifies :run, "execute[wait_apiserver_running]", :delayed
+    action :nothing
+end
+template "/opt/monitoring-template/influxdb-grafana-controller.yaml" do
+    mode "0644"
+    owner "root"
+    source "influxdb-grafana-controller.yaml.erb"
     variables :dns_ip => node['kubernetes']['dns_ip']
     notifies :run, "execute[wait_apiserver_running]", :delayed
     action :nothing
@@ -41,13 +65,13 @@ end
 
 
 execute "run-rc" do
-    cwd "/opt/dns-template/"
+    cwd "/opt/monitoring-template/"
     command "kubectl create -f skydns-rc.yaml"
     action :nothing
 end
 
 execute "run-svc" do
-    cwd "/opt/dns-template/"
+    cwd "/opt/monitoring-template/"
     command "kubectl create -f skydns-svc.yaml"
     action :nothing
 end
