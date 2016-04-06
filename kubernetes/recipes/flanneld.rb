@@ -20,7 +20,7 @@ template "/etc/init.d/flanneld" do
 	  :elb_url => node['etcd']['elb_url'],
 	  :etcd_password => node['etcd']['password']
 	})
-	notifies :disable, 'service[flanneld]', :delayed
+	notifies :disable, 'service[flanneld]', :immediately
 end
 
 
