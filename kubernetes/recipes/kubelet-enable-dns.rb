@@ -11,5 +11,5 @@ execute 'add-dns-settings' do
 end
 
 service "kubernetes-minion" do
-	action: nothing
+	action :nothing
 end
