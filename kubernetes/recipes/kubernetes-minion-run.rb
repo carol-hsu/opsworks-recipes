@@ -19,9 +19,10 @@ end
 
 service "docker" do
 	action :nothing
-	notifies :start, 'service[kubernetes-minion]', :immediately
+	notifies :start, 'service[start-kubernetes-minion]', :immediately
 end
 
-service "kubernetes-minion" do
+service "start-kubernetes-minion" do
+	service_name 'kubernetes-minion'
 	action :nothing
 end
