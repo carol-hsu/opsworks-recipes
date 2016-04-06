@@ -22,7 +22,6 @@ service "docker" do
 	notifies :start, 'service[kubernetes-minion]', :immediately
 end
 
-
 service "kubernetes-minion" do
 	action :nothing
 end
