@@ -15,7 +15,10 @@ template "/opt/dns-template/skydns-rc.yaml" do
     mode "0644"
     owner "root"
     source "skydns-rc.yaml.erb"
-    variables :dns_domain => node['kubernetes']['dns_domain']
+    variables ({
+		:dns_domain => node['kubernetes']['dns_domain'],
+    	:master_url => node['kubernetes']['master_url']
+	})
     notifies :run, "execute[wait_apiserver_running]", :delayed
     action :nothing
 end
