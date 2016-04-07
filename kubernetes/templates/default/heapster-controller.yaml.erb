@@ -41,7 +41,7 @@ spec:
               memory: 200Mi 
           command:
             - /heapster
-            - --source=kubernetes:<%= @master_url %>:8080?inClusterConfig=false
+            - --source=kubernetes:http://<%= @master_url %>:8080?inClusterConfig=false
             - --sink=influxdb:http://monitoring-influxdb.kube-system:8086
             - --metric_resolution=60s
         - image: gcr.io/google_containers/heapster:v1.1.0-beta1
@@ -56,62 +56,5 @@ spec:
               memory: 200 
           command:
             - /eventer
-            - --source=kubernetes:<%= @master_url %>:8080?inClusterConfig=false
+            - --source=kubernetes:http://<%= @master_url %>:8080?inClusterConfig=false
             - --sink=influxdb:http://monitoring-influxdb.kube-sustem:8086
-        - image: gcr.io/google_containers/addon-resizer:1.0
-          name: heapster-nanny
-          resources:
-            limits:
-              cpu: 50m
-              memory: 100Mi
-            requests:
-              cpu: 50m
-              memory: 100Mi
-          env:
-            - name: MY_POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-            - name: MY_POD_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-          command:
-            - /pod_nanny
-            - --cpu=100m
-            - --extra-cpu=0m
-            - --memory=200Mi
-            - --extra-memory=4Mi
-            - --threshold=5
-            - --deployment=heapster-v1.1.0.beta1
-            - --container=heapster
-            - --poll-period=300000
-        - image: gcr.io/google_containers/addon-resizer:1.0
-          name: eventer-nanny
-          resources:
-            limits:
-              cpu: 50m
-              memory: 100Mi
-            requests:
-              cpu: 50m
-              memory: 100Mi
-          env:
-            - name: MY_POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-            - name: MY_POD_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-          command:
-            - /pod_nanny
-            - --cpu=100m
-            - --extra-cpu=0m
-            - --memory=200Mi
-            - --extra-memory=500Ki
-            - --threshold=5
-            - --deployment=heapster-v1.1.0.beta1
-            - --container=eventer
-            - --poll-period=300000
-
