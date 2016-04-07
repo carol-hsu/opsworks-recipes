@@ -2,10 +2,10 @@
 
 bash 'add-dns-settings' do
 	code <<-EOH
-		sed -i "41a \\                \\--cluster-domain=#{node['kubernetes']['dns_domain']} \\\\" /etc/init.d/kubernetes-minion
-		sed -i "41a \\                \\--cluster-dns=#{node['kubernetes']['dns_ip']} \\\\" /etc/init.d/kubernetes-minion
+		`sed -i "41a \\                \\--cluster-domain=#{node['kubernetes']['dns_domain']} \\\\" /etc/init.d/kubernetes-minion`
+		`sed -i "41a \\                \\--cluster-dns=#{node['kubernetes']['dns_ip']} \\\\" /etc/init.d/kubernetes-minion`
 		EOH
-    notifies :restart, 'service[restart-kubernetes-minion]', :delayed
+    notifies :restart, 'service[restart-kubernetes-minion]', :immediately	
 end
 
 service "restart-kubernetes-minion" do
