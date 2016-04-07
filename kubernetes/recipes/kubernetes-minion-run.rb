@@ -16,10 +16,11 @@ bash 'wait_flanneld' do
 	EOH
 
 	action :nothing
-	notifies :start, 'service[docker]', :immediately
+	notifies :start, 'service[start-docker]', :immediately
 end
 
-service "docker" do
+service "start-docker" do
+	service_name 'docker'
 	action :nothing
 	notifies :start, 'service[start-kubernetes-minion]', :immediately
 end
