@@ -1,10 +1,13 @@
 # enable DNS setting in kubelet and restart 
 
-bash 'add-dns-settings' do
-	code <<-EOH
-		`sed -i "41a \\                \\--cluster-domain=#{node['kubernetes']['dns_domain']} \\\\" /etc/init.d/kubernetes-minion`
-		`sed -i "41a \\                \\--cluster-dns=#{node['kubernetes']['dns_ip']} \\\\" /etc/init.d/kubernetes-minion`
-		EOH
+template "/etc/init.d/kubernetes-minion" do
+    mode "0755"
+    owner "root"
+    source "kubernetes-minion-new.erb"
+    variables({
+      :dns_domain => node['kubernetes']['dns_domain'],
+      :dns_ip => node['kubernetes']['dns_ip']
+    })
     notifies :restart, 'service[restart-kubernetes-minion]', :immediately	
 end
 
