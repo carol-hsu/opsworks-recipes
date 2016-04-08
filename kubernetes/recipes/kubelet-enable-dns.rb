@@ -5,6 +5,7 @@ template "/etc/init.d/kubernetes-minion" do
     owner "root"
     source "kubernetes-minion-new.erb"
     variables({
+	  :master_url => node['kubernetes']['master_url'],
       :dns_domain => node['kubernetes']['dns_domain'],
       :dns_ip => node['kubernetes']['dns_ip']
     })
