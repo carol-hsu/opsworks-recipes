@@ -10,4 +10,10 @@ bash 'copy-auth' do
 	  sed -i '$d' ./.dockercfg  
 	  sed -i '$d' ./.dockercfg  
     EOH
+	notifies :restart, 'service[kubernetes-minion]', :immediately
+end
+
+service "kubernetes-minion" do
+	action :nothing
+	supports :restart => true, :stop => true, :start => true 
 end
