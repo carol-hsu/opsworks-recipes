@@ -5,9 +5,7 @@ bash 'copy-auth' do
     cwd '/var/lib/kubelet'
     code <<-EOH
       cp ~/.docker/config.json ./.dockercfg
-	  sed -i '1d' ./.dockercfg  
-	  sed -i '1d' ./.dockercfg  
-	  sed -i '$d' ./.dockercfg  
+	  sed -i '2d' ./.dockercfg  
 	  sed -i '$d' ./.dockercfg  
     EOH
 	notifies :restart, 'service[kubernetes-minion]', :immediately
