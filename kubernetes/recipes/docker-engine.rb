@@ -14,5 +14,6 @@ template "/etc/sysconfig/docker" do
 	mode "0644"
 	owner "root"
 	source "docker.erb"
+	variables :registry_url => node['docker']['registry']
 	action :nothing
 end

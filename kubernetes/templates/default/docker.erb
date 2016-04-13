@@ -8,7 +8,7 @@
 . /opt/mk-docker-opts.sh
 . /run/docker_opts.env
 
-INSECURE_REGISTRY='dcsrd-docker-registry.trendmicro.com'
+INSECURE_REGISTRY="<%= @registry_url %>"
 
 other_args="${DOCKER_OPTS} --insecure-registry ${INSECURE_REGISTRY}"
 #other_args="--bip=${FLANNEL_SUBNET} --mtu=${FLANNEL_MTU} --ip-masq=${FLANNEL_IPMASQ} --insecure-registry ${INSECURE_REGISTRY}"
