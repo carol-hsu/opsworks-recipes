@@ -1,5 +1,8 @@
-execute 'generate-auth' do
-    user 'root'
-	command "docker login -u #{node['docker']['user']} -p #{node['docker']['password']} -e yoyo@trend.com #{node['docker']['registry']}"
-
+template "/root/.dockercfg" do
+  source "docker.credential.erb"
+  variables({
+    :registry => node["docker"]["registry"],
+    :auth => node["docker"]["auth"],
+    :email => node["docker"]["email"]
+  })
 end

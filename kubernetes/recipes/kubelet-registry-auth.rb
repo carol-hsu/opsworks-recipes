@@ -1,13 +1,9 @@
 include_recipe 'kubernetes::docker-registry-auth'
 
-bash 'copy-auth' do
+execute 'copy-auth' do
     user 'root'
     cwd '/var/lib/kubelet'
-    code <<-EOH
-      cp ~/.docker/config.json ./.dockercfg
-	  sed -i '2d' ./.dockercfg  
-	  sed -i '$d' ./.dockercfg  
-    EOH
+    command 'cp ~/.dockercfg ./'
 	notifies :restart, 'service[kubernetes-minion]', :immediately
 end
 
