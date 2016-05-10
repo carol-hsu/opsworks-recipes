@@ -7,7 +7,6 @@ bash "minion-file-copy" do
     if [[ $(ls /usr/local/bin/kubelet) ]]; then
 		current_version=$(/usr/local/bin/kubelet --version | awk -F"Kubernetes v" '{ print $2 }')
 		if [ "$current_version" -eq "#{node['kubernetes']['version']}" ]; then
-        	echo "Passed binary file copy, the version is already updated"
         	exit
     	fi
 	fi

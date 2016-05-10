@@ -2,21 +2,16 @@ bash 'install_kubernetes' do
   user 'root'
   cwd '/tmp'
   code <<-EOH
-
   if [[ $(ls /usr/local/bin/kubectl) ]]; then
 	current_version=$(/usr/local/bin/kubectl version | awk 'NR==1' | awk -F":\"v" '{ print $2 }' | awk -F"\"," '{ print $1 }')
-	echo "machine version: $current_version installing version: #{node['kubernetes']['version']}"
 	if [ "$current_version" -eq "#{node['kubernetes']['version']}" ]; then
-		echo "Passed installation, the version is already updated"
 		exit
 	fi
   fi
 
   if [[ $(ls /usr/local/bin/kubelet) ]] ; then
 	current_version=$(/usr/local/bin/kubelet --version | awk -F"Kubernetes v" '{ print $2 }')
-	echo "machine version: $current_version installing version: #{node['kubernetes']['version']}"
     if [ "$current_version" -eq "#{node['kubernetes']['version']}" ]; then
-        echo "Passed installation, the version is already updated"
         exit
     fi
   fi
