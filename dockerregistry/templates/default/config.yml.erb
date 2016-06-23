@@ -5,8 +5,10 @@ log:
     service: registry
     environment: development
 storage:
+    delete:
+      enabled: true
     cache:
-        layerinfo: inmemory
+        blobdescriptor: inmemory
     s3:
         region: "<%= @region %>"
         bucket: "<%= @bucket %>"
