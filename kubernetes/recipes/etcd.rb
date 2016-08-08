@@ -4,10 +4,11 @@ bash 'install_etcd' do
   code <<-EOH
   if [ -f /usr/local/bin/etcd ]; then
     current_version=$(/usr/local/bin/etcd --version | awk 'NR==1' | awk -F":" '{ print $2 }')
-    if [ "$current_version" -eq "#{node['etcd']['version']}" ]; then
+    if [ "$current_version" == "#{node['etcd']['version']}" ]; then
         exit
     else
         rm -rf etcd-*-linux-amd64*
+        rm -f /usr/local/bin/etcd*
     fi 
   fi
 
