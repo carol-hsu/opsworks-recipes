@@ -4,7 +4,7 @@ bash 'install_etcd' do
   code <<-EOH
   if [ -f /usr/local/bin/etcd ]; then
     current_version=$(/usr/local/bin/etcd --version | awk 'NR==1' | awk -F":" '{ print $2 }')
-    if [ "$current_version" -eq "#{node['etcd']['version']}" ]; then
+    if [ "$current_version" == "#{node['etcd']['version']}" ]; then
         exit
     else
         rm -rf etcd-*-linux-amd64*
@@ -20,14 +20,13 @@ bash 'install_etcd' do
 end
 
 template "/etc/init.d/etcd" do
-	mode "0755"
-	owner "root"
-	source "etcd.erb"
+  mode "0755"
+  owner "root"
+  source "etcd-discovery.erb"
 end
 
 service "etcd" do
-	action [:enable, :start]
-	subscribes :reload, "template[/etc/init.d/etcd]", :immediately
-	subscribes :reload, "template[/root/etcd_enable_ba.sh]", :immediately	
+  action [:enable, :start]
+  subscribes :reload, "template[/etc/init.d/etcd]", :immediately
 end
 
