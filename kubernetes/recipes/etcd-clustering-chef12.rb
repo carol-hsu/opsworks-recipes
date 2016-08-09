@@ -1,12 +1,15 @@
-private_ip = node['opsworks']['instance']['private_ip']
-hostname = node['opsworks']['instance']['hostname']
+instance = search("aws_opsworks_instance", "self:true").first
+
+private_ip = instance['private_ip']
+hostname = instance['hostname']
 members = Array.new
 ip_enable_ba = nil
 
-node['opsworks']['layers']['etcd']['instances'].each do |inst|
-	members << inst[0]+"=http://"+inst[1][:private_ip]+":2380"
+
+search(:node, "name:etcd*").each do |inst|
+	members << inst['hostname']+"=http://"+inst['private_ip']+":2380"
 	if ip_enable_ba == nil
-		ip_enable_ba = inst[1][:private_ip]
+		ip_enable_ba = inst['private_ip']
 	end
 end
 
