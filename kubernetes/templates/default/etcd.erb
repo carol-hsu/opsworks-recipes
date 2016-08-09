@@ -28,10 +28,7 @@ hostname=`hostname`
 start() {
 	# Start daemon.
 	echo -n $"Starting $prog: "
-	daemon $prog \
-		-name ${hostname} \
-		-addr=0.0.0.0:4001 \
-		> /var/log/etcd.log 2>&1 &
+	daemon $prog -name ${hostname} > /var/log/etcd.log 2>&1 & 
 	RETVAL=$?
 	echo
 	[ $RETVAL -eq 0 ] && touch $lockfile

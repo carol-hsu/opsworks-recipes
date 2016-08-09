@@ -1,10 +1,10 @@
 #! /bin/bash
 
 etcd -name <%= @hostname %> \
-        -initial-advertise-peer-urls http://<%= @private_ip %>:7001 \
-        -listen-peer-urls http://<%= @private_ip %>:7001 \
-        -listen-client-urls http://<%= @private_ip %>:4001,http://127.0.0.1:4001 \
-        -advertise-client-urls http://<%= @private_ip %>:4001 \
+        -initial-advertise-peer-urls http://<%= @private_ip %>:2380 \
+        -listen-peer-urls http://<%= @private_ip %>:2380 \
+        -listen-client-urls http://<%= @private_ip %>:2379,http://127.0.0.1:2379 \
+        -advertise-client-urls http://<%= @private_ip %>:2379 \
         -initial-cluster-token etcd-cluster-<%= @token_postfix %> \
         -initial-cluster <%= @members %> \
         -initial-cluster-state new > /var/log/etcd_bootstrap.log 2>&1 &
