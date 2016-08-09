@@ -24,6 +24,7 @@ template "/etc/init.d/etcd" do
 	mode "0755"
 	owner "root"
 	source "etcd.erb"
+    variables :private_ip => node['opsworks']['instance']['private_ip']
 end
 
 service "etcd" do
