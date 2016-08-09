@@ -20,13 +20,13 @@ bash 'install_etcd' do
   EOH
 end
 
-private_ip = node['opsworks']['instance']['private_ip']
 
 template "/etc/init.d/etcd" do
 	mode "0755"
 	owner "root"
 	source "etcd.erb"
-    variables :private_ip => private_ip 
+    variables :private_ip => node[:opsworks][:instance][:private_ip]
+
 end
 
 service "etcd" do
