@@ -7,13 +7,11 @@ ip_enable_ba = nil
 
 
 search(:node, "name:etcd*").each do |inst|
-    Chef::Log.info(inst['ipaddress'])
-#	members << inst['hostname']+"=http://"+inst['private_ip']+":2380"
-#	if ip_enable_ba == nil
-#		ip_enable_ba = inst['private_ip']
-#	end
+	members << inst['hostname']+"=http://"+inst['ipaddress']+":2380"
+	if ip_enable_ba == nil
+		ip_enable_ba = inst['ipaddress']
+	end
 end
-=begin
 template "/root/etcd_static_bootstrap.sh" do
 	mode "0755"
 	owner "root"
@@ -67,4 +65,3 @@ if private_ip == ip_enable_ba
 	    subscribes :run, "bash[etcd_bootstrap]", :delayed
 	end
 end
-=end
