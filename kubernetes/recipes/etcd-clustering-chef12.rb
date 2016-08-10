@@ -7,7 +7,7 @@ ip_enable_ba = nil
 
 
 search(:node, "name:etcd*").each do |inst|
-    Chef::Log.info(inst['default']['ipaddress'])
+    Chef::Log.info(inst['ipaddress'])
 #	members << inst['hostname']+"=http://"+inst['private_ip']+":2380"
 #	if ip_enable_ba == nil
 #		ip_enable_ba = inst['private_ip']
