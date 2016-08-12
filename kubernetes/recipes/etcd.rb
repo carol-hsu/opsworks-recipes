@@ -5,7 +5,7 @@ bash 'install_etcd' do
   
   # check ETCD version, no use version larger than 2 
   if [ $(($( echo #{node['etcd']['version']} | cut -d '.' -f1 ))) -le 3 ]; then
-      Chef::Log.info('please apply ETCD v2 since k8s currently no support v3 BA :D')
+      echo "please apply ETCD v2 since k8s currently no support v3 BA :D"
       exit 1;
   fi
 
