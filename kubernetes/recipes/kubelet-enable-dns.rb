@@ -3,7 +3,7 @@
 template "/etc/init.d/kubernetes-minion" do
     mode "0755"
     owner "root"
-    source "kubernetes-minion-new.erb"
+    source "kubernetes-minion.erb"
     variables({
 	  :master_url => node['kubernetes']['master_url'],
       :dns_domain => node['kubernetes']['dns_domain'],

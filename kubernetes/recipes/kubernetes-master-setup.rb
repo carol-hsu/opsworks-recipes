@@ -27,7 +27,7 @@ etcd_endpoint="http://root:#{node['etcd']['password']}@#{node['etcd']['elb_url']
 template "/etc/init.d/kubernetes-master" do
     mode "0755"
     owner "root"
-    source "kubernetes-master-new.erb"
+    source "kubernetes-master.erb"
     variables({
       :etcd_server => etcd_endpoint,
       :cluster_cidr => node['kubernetes']['cluster_cidr'],

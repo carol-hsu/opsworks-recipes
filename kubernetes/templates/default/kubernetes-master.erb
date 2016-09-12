@@ -47,16 +47,15 @@ start() {
 		-XPUT -d value="{ \"Network\": \"${CLUSTER_IP_RANGE}\" }"
 
 
-	# Start daemon.
+	# Start daemon. for v1.2 or upper
 	echo $"Starting apiserver: "
 	daemon $apiserver_prog \
 	--service-cluster-ip-range=${CLUSTER_IP_RANGE} \
 	--insecure-port=8080 \
 	--secure-port=6443 \
 	--basic-auth-file="<%= @ba_path %>" \
-	--address=0.0.0.0 \
+	--insecure-bind-address=0.0.0.0 \
 	--etcd_servers=${ETCD_SERVERS} \
-	--cluster_name=${CLUSTER_NAME} \
 	> ${logfile}-apiserver.log 2>&1 &
 	
 	echo $"Starting controller-manager: "
