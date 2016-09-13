@@ -1,6 +1,6 @@
 include_recipe 'kubernetes::kubernetes'
 
-bash "minion-file-copy" do
+bash "node-file-copy" do
     user 'root'
     cwd '/tmp/kubernetes/server/kubernetes/server/bin'
     code <<-EOH
@@ -18,7 +18,7 @@ directory '/var/lib/kubelet' do
 	owner 'root'
 	group 'root'
 	mode '0755'
-	subscribes :create, "bash[minion-file-copy]", :immediately
+	subscribes :create, "bash[node-file-copy]", :immediately
     action :nothing
 end
 
@@ -26,20 +26,20 @@ directory '/etc/kubernetes' do
 	owner 'root'
 	group 'root'
 	mode '0755'
-	subscribes :create, "bash[minion-file-copy]", :immediately
+	subscribes :create, "bash[node-file-copy]", :immediately
     action :nothing
 end
 
-template "/etc/init.d/kubernetes-minion" do
+template "/etc/init.d/kubernetes-node" do
 	mode "0755"
 	owner "root"
-	source "kubernetes-minion.erb"
+	source "kubernetes-node.erb"
 	variables :master_url => node['kubernetes']['master_url']
-	subscribes :create, "bash[minion-file-copy]", :immediately
-	notifies :disable, 'service[kubernetes-minion]', :immediately
+	subscribes :create, "bash[node-file-copy]", :immediately
+	notifies :disable, 'service[kubernetes-node]', :immediately
     action :nothing
 end
 
-service "kubernetes-minion" do
+service "kubernetes-node" do
 	action :nothing
 end

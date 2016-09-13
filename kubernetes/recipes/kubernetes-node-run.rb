@@ -1,4 +1,4 @@
-include_recipe 'kubernetes::kubernetes-minion-setup'
+include_recipe 'kubernetes::kubernetes-node-setup'
 
 service "flanneld" do
 	action :start
@@ -22,10 +22,10 @@ end
 service "start-docker" do
 	service_name 'docker'
 	action :nothing
-	notifies :start, 'service[start-kubernetes-minion]', :immediately
+	notifies :start, 'service[start-kubernetes-node]', :immediately
 end
 
-service "start-kubernetes-minion" do
-	service_name 'kubernetes-minion'
+service "start-kubernetes-node" do
+	service_name 'kubernetes-node'
 	action :nothing
 end
