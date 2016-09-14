@@ -28,13 +28,13 @@ bash 'install_etcd' do
   EOH
 end
 
-instance = search("aws_opsworks_instance", "self:true").first
+#instance = search("aws_opsworks_instance", "self:true").first
 
 template "/etc/init.d/etcd" do
 	mode "0755"
 	owner "root"
 	source "etcd.erb"
-    variables :private_ip => instance['private_ip']  
+    variables :private_ip => node["opsworks"]["instance"]["private_ip"]  
 end
 
 service "etcd" do
