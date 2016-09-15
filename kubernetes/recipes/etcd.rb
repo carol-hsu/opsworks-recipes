@@ -28,6 +28,8 @@ bash 'install_etcd' do
   EOH
 end
 
+Chef::Log.info("****** #{Chef::VERSION}*******")
+
 #instance = search("aws_opsworks_instance", "self:true").first
 
 template "/etc/init.d/etcd" do
