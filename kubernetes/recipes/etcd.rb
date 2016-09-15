@@ -29,7 +29,7 @@ bash 'install_etcd' do
 end
 
 chef_version = Chef::VERSION
-if chef_version.split(".")[0] = "11"
+if chef_version.split(".")[0] == "11"
     instance = node["opsworks"]["instance"]
 else #Chef 12
     instance = search("aws_opsworks_instance", "self:true").first
