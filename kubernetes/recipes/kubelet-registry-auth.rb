@@ -4,10 +4,10 @@ execute 'copy-auth' do
     user 'root'
     cwd '/var/lib/kubelet'
     command 'cp ~/.dockercfg ./'
-	notifies :restart, 'service[kubernetes-minion]', :immediately
+	notifies :restart, 'service[kubernetes-node]', :immediately
 end
 
-service "kubernetes-minion" do
+service "kubernetes-node" do
 	action :nothing
 	supports :restart => true, :stop => true, :start => true 
 end
