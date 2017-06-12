@@ -15,12 +15,24 @@ directory '/home/jenkins/.ssh' do
 	mode '0700'
 end
 
+bash 'install-ant-and-java' do
+    user 'root'
+    code <<-EOH
+    # install Java 1.8
+	apt-add-repository -y ppa:webupd8team/java
+	apt-get -y update
+	echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
+	echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo debconf-set-selections	
+	apt-get -y install oracle-java8-installer	
+    apt-get -y install ant
+    EOH
+end
+
 bash 'install-required-package' do
 	user 'root'
 	code <<-EOH
-	apt-get -y update
 	apt-get -y install libasound2-dev
-	apt-get -y python python-pip
+	apt-get -y install python python-pip
 	pip install awscli
 	dpkg --add-architecture i386
 	apt-get -y install libc6
