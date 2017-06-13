@@ -53,6 +53,8 @@ bash 'install-toolchain' do
 	tar xvf #{node["package_info"]["package_for_version2"]} -C /opt
 	tar xvf #{node["package_info"]["package_from_kernel_for_version1"]} -C /opt
 
+	rm -f #{node["package_info"]["package_for_version1"]} #{node["package_info"]["package_for_version2"]} #{node["package_info"]["package_from_kernel_for_version1"]}
+
 	EOH
 end
 
