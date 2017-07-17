@@ -20,8 +20,8 @@ bash 'install-ant-and-java' do
 	code <<-EOH
 	yum -y update
 	yum -y install ant
-	yum install java-1.8.0
-	yum remove java-1.7.0-openjdk
+	yum -y install java-1.8.0
+	yum -y remove java-1.7.0-openjdk
     EOH
 end
 
